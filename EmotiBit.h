@@ -16,7 +16,14 @@
 #include <SparkFun_MLX90632_Arduino_Library.h>
 #include "DoubleBufferFloat.h"
 #include <ArduinoJson.h>
+#ifdef SWEA_BLE
+// SWEA: BLE transport replaces Wi-Fi (see SweaBleTransport.h, docs/SWEA_BLE_PROTOCOL.md)
+#include "SweaBleTransport.h"
+#include "EmotiBitPacket.h"
+typedef SweaBleTransport EmotiBitWiFi;
+#else
 #include "EmotiBitWiFi.h"
+#endif
 #include <SPI.h>
 #ifdef ARDUINO_FEATHER_ESP32
 #include <SD.h>
@@ -55,7 +62,7 @@ public:
 
 
 
-  String firmware_version = "1.12.1";
+  String firmware_version = "1.14.3";
 
 
 
@@ -298,7 +305,7 @@ public:
 	static const uint16_t OUT_MESSAGE_RESERVE_SIZE = 2048;
 	static const uint16_t OUT_MESSAGE_TARGET_SIZE = 1024;
 	static const uint16_t DATA_SEND_INTERVAL = 100;
-	static const uint16_t MAX_SD_WRITE_LEN = 512; // 512 is the size of the sdFat buffer
+	static const uint16_t MAX_SEND_LEN = 512;
 	static const uint16_t MAX_DATA_BUFFER_SIZE = 48;
 	static const uint16_t NORMAL_POWER_MODE_PACKET_INTERVAL = 200;
 	static const uint16_t LOW_POWER_MODE_PACKET_INTERVAL = 1000;
@@ -425,6 +432,7 @@ public:
 	volatile bool _sdWrite;
 	PowerMode _powerMode;
 	bool _sendTestData = false;
+	EmotiBitPacket::TestType _testDataType = EmotiBitPacket::TestType::SAWTOOTH; // Default to Sawtooth
 	DataType _serialData = DataType::length;
 	volatile bool buttonPressed = false;
 	bool startBufferOverflowTest = false;
@@ -503,7 +511,11 @@ public:
 	size_t readData(EmotiBit::DataType t, float **data, uint32_t &timestamp);	
 
 	void updateBatteryIndication(float battPercent);
-	void appendTestData(String &dataMessage, uint16_t &packetNumber);
+	/**
+	* @brief Adds test packet string to dataMessage
+	* @param dataMessage 
+	*/
+	void addTestData(String &dataMessage);
 	bool createModePacket(String &modePacket, uint16_t &packetNumber);
 	void sendModePacket(String &sentModePacket, uint16_t &packetNumber);
 	void processDebugInputs(String &debugPackets, uint16_t &packetNumber);

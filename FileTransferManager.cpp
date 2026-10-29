@@ -1,3 +1,4 @@
+#ifndef SWEA_BLE // SWEA: FTP over Wi-Fi is not built for the BLE firmware
 /**************************************************************************/
 /*!
     @file     FileTransferManager.cpp
@@ -134,3 +135,13 @@ void FileTransferManager::handleTransfer()
     }
 
 }
+#else // SWEA_BLE: file transfer over Wi-Fi/FTP is not available; keep the API so shared code links
+#include "FileTransferManager.h"
+bool FileTransferManager::begin() { return false; }
+void FileTransferManager::setFtpAuth(String username, String password) { _ftpCreds.username = username; _ftpCreds.password = password; }
+bool FileTransferManager::setProtocol(Protocol protocol) { return false; }
+FileTransferManager::Protocol FileTransferManager::getProtocol() { return Protocol::NONE; }
+bool FileTransferManager::setMode(Mode mode) { return false; }
+FileTransferManager::Mode FileTransferManager::getMode() { return Mode::NORMAL; }
+void FileTransferManager::handleTransfer() {}
+#endif // SWEA_BLE

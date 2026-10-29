@@ -15,7 +15,11 @@
 /**************************************************************************/
 #ifndef FILE_TRANSFER_MANAGER_H
 #define FILE_TRANSFER_MANAGER_H
+#ifndef SWEA_BLE
 #include <SimpleFTPServer.h>
+#else
+#include <Arduino.h> // SWEA: String comes from here when the FTP library is not included
+#endif
 #include <String.h>
 
 class FileTransferManager
@@ -40,7 +44,9 @@ class FileTransferManager
         String password = "ftp";  //!< password to use on the FTP client to log-into the server
     }_ftpCreds;
 
+#ifndef SWEA_BLE
     FtpServer ftpServer;
+#endif
 
     /*!
     * @brief Function to setup File transfer

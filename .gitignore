@@ -19,3 +19,12 @@
 **/test
 **/Release
 **/Debug
+**/.gitignore
+**/build
+
+# EmotiBit workflow specific
+stage-release/
+**/*.zip
+
+# SWEA tools
+.venv-tools/

@@ -1,0 +1,6 @@
+# Python packages for tools/emotibit.py (installed by tools/setup.ps1 or tools/setup.sh into .venv-tools)
+esptool==4.8.1
+pyserial>=3.5
+platformio>=6.1.0
+bleak>=0.22        # only used by `emotibit.py scan` and the BLE test scripts
+segno==1.6.6       # QR codes for `emotibit.py label`
